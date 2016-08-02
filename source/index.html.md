@@ -1,189 +1,296 @@
----
-title: API Reference
+## <a name="resource-person">Person</a>
 
-language_tabs:
-  - shell
-  - ruby
-  - python
-  - javascript
+Stability: `prototype`
 
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a>
+A person (living, breathing human being).
 
-includes:
-  - errors
 
-search: true
----
+### Attributes
 
-# Introduction
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **data:attributes:email** | *email* | email address | `"username@example.com"` |
+| **data:attributes:first-name** | *string* | first name | `"Sigurd"` |
+| **data:attributes:last-name** | *string* | last name | `"Kuhn"` |
+| **data:attributes:middle-name** | *string* | middle name | `"Graham"` |
+| **data:attributes:phone-numbers/label** | *string* | phone number label | `"home"` |
+| **data:attributes:phone-numbers/number** | *string* | fully qualified phone number | `"+12065558971x12100"` |
+| **data:id** | *uuid* | unique identifier of a person | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **[data:relationships:revision:data:id](#resource-revision)** | *uuid* | unique identifier of a revision | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **[data:relationships:revision:data:type](#resource-revision)** | *string* | the revision type<br/> **one of:**`"revisions"` | `"revisions"` |
+| **data:type** | *string* | the people type<br/> **one of:**`"people"` | `"people"` |
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+### Person Create
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+Create a new person.
 
-This example API documentation page was created with [Slate](https://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
 
-# Authentication
-
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+```
+POST /people
 ```
 
-```python
-import kittn
+#### Optional Parameters
 
-api = kittn.authorize('meowmeowmeow')
-```
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **data:attributes:email** | *email* | email address | `"username@example.com"` |
+| **data:attributes:first-name** | *string* | first name | `"Sigurd"` |
+| **data:attributes:last-name** | *string* | last name | `"Kuhn"` |
+| **data:attributes:middle-name** | *string* | middle name | `"Graham"` |
+| **data:attributes:phone-numbers/label** | *string* | phone number label | `"home"` |
+| **data:attributes:phone-numbers/number** | *string* | fully qualified phone number | `"+12065558971x12100"` |
+| **data:id** | *uuid* | unique identifier of a person | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **data:type** | *string* | the people type<br/> **one of:**`"people"` | `"people"` |
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
 
-```javascript
-const kittn = require('kittn');
+#### Curl Example
 
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+```bash
+$ curl -n -X POST https://api.example.com/accounts/people \
+  -d '{
+  "data": {
+    "type": "people",
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "attributes": {
+      "first-name": "Sigurd",
+      "middle-name": "Graham",
+      "last-name": "Kuhn",
+      "email": "username@example.com",
+      "phone-numbers": [
+        {
+          "label": "home",
+          "number": "+12065558971x12100"
+        }
+      ]
+    }
   }
-]
+}' \
+  -H "Content-Type: application/vnd.api+json"
 ```
 
-This endpoint retrieves all kittens.
 
-### HTTP Request
+#### Response Example
 
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
 ```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
+HTTP/1.1 201 Created
 ```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "data": {
+    "type": "people",
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "attributes": {
+      "first-name": "Sigurd",
+      "middle-name": "Graham",
+      "last-name": "Kuhn",
+      "email": "username@example.com",
+      "phone-numbers": [
+        {
+          "label": "home",
+          "number": "+12065558971x12100"
+        }
+      ]
+    },
+    "relationships": {
+      "revision": {
+        "data": {
+          "type": "revisions",
+          "id": "01234567-89ab-cdef-0123-456789abcdef"
+        }
+      }
+    }
+  }
 }
 ```
 
-This endpoint retrieves a specific kitten.
+### Person Info
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+Info for an existing person.
 
-### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+```
+GET /people/{person_id}
+```
 
-### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+#### Curl Example
+
+```bash
+$ curl -n https://api.example.com/accounts/people/$PERSON_ID \
+ -G \
+  -d  \
+  -H "Content-Type: application/vnd.api+json"
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "data": {
+    "type": "people",
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "attributes": {
+      "first-name": "Sigurd",
+      "middle-name": "Graham",
+      "last-name": "Kuhn",
+      "email": "username@example.com",
+      "phone-numbers": [
+        {
+          "label": "home",
+          "number": "+12065558971x12100"
+        }
+      ]
+    },
+    "relationships": {
+      "revision": {
+        "data": {
+          "type": "revisions",
+          "id": "01234567-89ab-cdef-0123-456789abcdef"
+        }
+      }
+    }
+  }
+}
+```
+
+### Person List
+
+List existing people.
+
+
+```
+GET /people
+```
+
+#### Optional Parameters
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **filter[changed-since]** | *date-time* |  | `"2015-01-01T12:00:00Z"` |
+
+
+#### Curl Example
+
+```bash
+$ curl -n https://api.example.com/accounts/people \
+ -G \
+  -d filter[changed-since]=2015-01-01T12%3A00%3A00Z \
+  -H "Content-Type: application/vnd.api+json"
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "data": [
+    {
+      "type": "people",
+      "id": "01234567-89ab-cdef-0123-456789abcdef",
+      "attributes": {
+        "first-name": "Sigurd",
+        "middle-name": "Graham",
+        "last-name": "Kuhn",
+        "email": "username@example.com",
+        "phone-numbers": [
+          {
+            "label": "home",
+            "number": "+12065558971x12100"
+          }
+        ]
+      },
+      "relationships": {
+        "revision": {
+          "data": {
+            "type": "revisions",
+            "id": "01234567-89ab-cdef-0123-456789abcdef"
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+### Person Batch Create
+
+Create a group of people together with an import tag.
+Warning! This is not currently JSON API compliant until a bulk extension is
+standardized.
+
+
+```
+POST /people/batches/{revision_import-tag}
+```
+
+#### Optional Parameters
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **data** | *array* |  | `[{"type":"people","id":"01234567-89ab-cdef-0123-456789abcdef","attributes":{"first-name":"Sigurd","middle-name":"Graham","last-name":"Kuhn","email":"username@example.com","phone-numbers":[{"label":"home","number":"+12065558971x12100"}]}}]` |
+
+
+#### Curl Example
+
+```bash
+$ curl -n -X POST https://api.example.com/accounts/people/batches/$REVISION_IMPORT-TAG \
+  -d '{
+  "data": [
+    {
+      "type": "people",
+      "id": "01234567-89ab-cdef-0123-456789abcdef",
+      "attributes": {
+        "first-name": "Sigurd",
+        "middle-name": "Graham",
+        "last-name": "Kuhn",
+        "email": "username@example.com",
+        "phone-numbers": [
+          {
+            "label": "home",
+            "number": "+12065558971x12100"
+          }
+        ]
+      }
+    }
+  ]
+}' \
+  -H "Content-Type: application/vnd.api+json"
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 202 Accepted
+```
+
+
+
+## <a name="resource-revision">Revision</a>
+
+Stability: `prototype`
+
+Revisions are linked from all other objects to be able to reference when a
+particular resource was made along with any possible metadata.
+
+
+### Attributes
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **data:attributes:created-at** | *date-time* | when this import tag was created | `"2015-01-01T12:00:00Z"` |
+| **data:attributes:import-tag** | *string* | a tag to represent an import operation | `"example"` |
+| **data:id** | *uuid* | unique identifier of a revision | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **data:type** | *string* | the revision type<br/> **one of:**`"revisions"` | `"revisions"` |
+
 
