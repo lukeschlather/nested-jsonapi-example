@@ -1,0 +1,6 @@
+description: "Example API"
+id: "accounts"
+title: "Accounts"
+links:
+  - href: "https://api.example.com/accounts"
+    rel: "self"

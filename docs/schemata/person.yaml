@@ -1,0 +1,183 @@
+---
+$schema: http://json-schema.org/draft-04/hyper-schema
+title: Person
+description: |
+  A person (living, breathing human being).
+stability: prototype
+strictProperties: true
+type: object
+definitions:
+  # JSON API required definitions
+  resource-identifier:
+    description: identifier of a single person
+    type: object
+    properties:
+      type:
+        $ref: /schemata/person#/definitions/type
+      id:
+        $ref: /schemata/person#/definitions/id
+  resource:
+    description: object representing a single person
+    type: object
+    properties:
+      type:
+        $ref: /schemata/person#/definitions/type
+      id:
+        $ref: /schemata/person#/definitions/id
+      attributes:
+        $ref: /schemata/person#/definitions/attributes
+      relationships:
+        $ref: /schemata/person#/definitions/relationships
+  type:
+    description: the people type
+    enum:
+      - people
+    example: people
+    type: string
+  id:
+    description: unique identifier of a person
+    format: uuid
+    type: string
+
+  # JSON API required person specific definitions
+  attributes:
+    description: object with all the attributes of a single person
+    type: object
+    required:
+      - first-name
+      - middle-name
+      - last-name
+      - email
+      - phone-numbers
+    properties:
+      first-name:
+        $ref: /schemata/person#/definitions/first-name
+      middle-name:
+        $ref: /schemata/person#/definitions/middle-name
+      last-name:
+        $ref: /schemata/person#/definitions/last-name
+      email:
+        $ref: /schemata/person#/definitions/email
+      phone-numbers:
+        $ref: /schemata/person#/definitions/phone-numbers
+  relationships:
+    description: object with all the relationships of a single person
+    type: object
+    properties:
+      revision:
+        properties:
+          data:
+            $ref: /schemata/revision#/definitions/resource-identifier
+
+  resource-without-revision:
+    description: object representing a single person
+    type: object
+    properties:
+      type:
+        $ref: /schemata/person#/definitions/type
+      id:
+        $ref: /schemata/person#/definitions/id
+      attributes:
+        $ref: /schemata/person#/definitions/attributes
+
+  # Field types for person
+  first-name:
+    description: first name
+    example: Sigurd
+    type: string
+  middle-name:
+    description: middle name
+    example: Graham
+    type: string
+  last-name:
+    description: last name
+    example: Kuhn
+    type: string
+  email:
+    description: email address
+    format: email
+    type: string
+  phone-numbers:
+    description: phone numbers with types
+    type: array
+    items:
+      properties:
+        label:
+          description: phone number label
+          example: home
+          type: string
+        number:
+          description: fully qualified phone number
+          example: "+12065558971x12100"
+          type: string
+      type: object
+  identity:
+    $ref: /schemata/person#/definitions/id
+links:
+- description: |
+    Create a new person.
+  href: /people
+  method: POST
+  rel: create
+  schema:
+    properties:
+      data:
+        $ref: /schemata/person#/definitions/resource-without-revision
+    type: object
+  title: Create
+  http_header:
+    Content-Type: application/vnd.api+json
+- description: |
+    Info for an existing person.
+  href: /people/{(%2Fschemata%2Fperson%23%2Fdefinitions%2Fidentity)}
+  method: GET
+  rel: self
+  title: Info
+  schema:
+    properties: {}
+    type: object
+  http_header:
+    Content-Type: application/vnd.api+json
+- description: |
+    List existing people.
+  href: /people
+  method: GET
+  rel: instances
+  schema:
+    properties:
+      filter[changed-since]:
+        format: date-time
+        type: string
+    type: object
+  targetSchema:
+    properties:
+      data:
+        items:
+          $ref: /schemata/person#/definitions/resource
+        type: array
+    type: object
+  title: List
+  http_header:
+    Content-Type: application/vnd.api+json
+- description: |
+    Create a group of people together with an import tag.
+    Warning! This is not currently JSON API compliant until a bulk extension is
+    standardized.
+  href: /people/batches/{(%2Fschemata%2Frevision%23%2Fdefinitions%2Fimport-tag)}
+  method: POST
+  rel: empty
+  schema:
+    properties:
+      data:
+        items:
+          $ref: /schemata/person#/definitions/resource-without-revision
+        type: array
+    type: object
+  title: Batch Create
+  http_header:
+    Content-Type: application/vnd.api+json
+
+properties:
+  data:
+    $ref: /schemata/person#/definitions/resource
+id: schemata/person

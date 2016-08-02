@@ -1,0 +1,63 @@
+---
+$schema: http://json-schema.org/draft-04/hyper-schema
+title: Revision
+description: |
+  Revisions are linked from all other objects to be able to reference when a
+  particular resource was made along with any possible metadata.
+stability: prototype
+strictProperties: true
+type: object
+definitions:
+  resource-identifier:
+    description: identifier for a single revision
+    type: object
+    properties:
+      type:
+        $ref: /schemata/revision#/definitions/type
+      id:
+        $ref: /schemata/revision#/definitions/id
+  resource:
+    description: object representing a single revision
+    type: object
+    properties:
+      id:
+        $ref: /schemata/revision#/definitions/id
+      type:
+        $ref: /schemata/revision#/definitions/type
+      attributes:
+        $ref: /schemata/revision#/definitions/attributes
+  attributes:
+    description: object containing the attributes of a revision
+    type: object
+    properties:
+      created-at:
+        $ref: /schemata/revision#/definitions/created-at
+      import-tag:
+        $ref: /schemata/revision#/definitions/import-tag
+  id:
+    description: unique identifier of a revision
+    format: uuid
+    type: string
+  type:
+    description: the revision type
+    enum:
+      - revisions
+    example: revisions
+    type: string
+  created-at:
+    description: when this import tag was created
+    format: date-time
+    type: string
+  import-tag:
+    description: a tag to represent an import operation
+    type: string
+  identity:
+    $ref: /schemata/revision#/definitions/id
+
+links: []
+
+properties:
+  data:
+    $ref: /schemata/revision#/definitions/resource
+
+id: schemata/revision
